@@ -1,0 +1,16 @@
+Version: 1.0
+ProjectId: 7cc60127-bd6a-4965-a75a-f7fc549d31f4
+
+RestoreWorkspace: Default
+SaveWorkspace: Default
+AlwaysSaveHistory: Default
+
+EnableCodeIndexing: Yes
+UseSpacesForTab: Yes
+NumSpacesForTab: 2
+Encoding: UTF-8
+
+RnwWeave: Sweave
+LaTeX: pdfLaTeX
+
+ProjectName: SKJ_2025_qcreep
