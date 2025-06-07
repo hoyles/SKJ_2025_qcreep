@@ -832,10 +832,10 @@ savePlot(paste0(skj22_dir,"/figures/","LF samples longline adjusted.png"), type 
 ##########----------------------------------------------------------------
 # Load all the runs
 setwd(skj22_dir)
-#testrep1 <- testlens <- list()
-alldirs <- dir(path="./test/", full.names=TRUE)[-c(1)]
-nnm <- dir(path="./test/")[-c(1)]
-for (i in 58:length(alldirs)) {
+testrep1 <- testlens <- list()
+alldirs <- dir(path="./Runs/", full.names=TRUE)[-c(2)]
+nnm <- dir(path="./Runs/")[-c(2)]
+for (i in 1:length(alldirs)) {
   dd <- alldirs[i]
   # print(dd)
   # print(list.files(path=dd, pattern="par.rep"))
@@ -857,88 +857,87 @@ for (i in 58:length(alldirs)) {
 for (i in 1:length(alldirs)) testrep1[[i]]$dirname <- nnm[i]
 
 
+windows(10,10); par(mfrow=c(3,4))
 for(i in 1:length(testrep1)){ 
-  if(i %in% c(10, 19, 28, 37, 46, 55)){
-    savePlot(paste0(skj22_dir,"/figures/allruns2_recruitment_",i-1,".png"), type = "png")
-  }
-  if(i %in% c(1, 10, 19, 28, 37, 46, 55)) {
-    windows(10,10); par(mfrow=c(3,3))}
-  if(length(testrep1[[i]]) > 0) {
-    yrs <- testrep1[[i]]$yrs
-    doyrs <- (max(yrs) - 25):max(yrs)
-    gety <- (length(yrs)-100): length(yrs)
-    yl <- max(apply(testrep1[[i]]$Recruitment,1,sum)[-(1:160)])
-    plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="Recruitment", type = "n", main = nnm[i])
-    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$Recruitment,1,sum)[gety], col = i, lwd=1, lty=1)
-  }}
-savePlot(paste0(skj22_dir,"/figures/allruns2_recruitment_",i,".png"), type = "png")
-
-for(i in 1:length(testrep1)){ 
-  if(i %in% c(10, 19, 28, 37, 46, 55)){
-    savePlot(paste0(skj22_dir,"/figures/allruns2_recruit2_",i-1,".png"), type = "png")
-  }
-  if(i %in% c(1, 10, 19, 28, 37, 46, 55)) {
-    windows(10,10); par(mfrow=c(3,3))}
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
     doyrs <- testrep1[[i]]$yrs
     gety <- 1:length(yrs)
     yl <- max(apply(testrep1[[i]]$Recruitment,1,sum))
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="Recruitment", type = "n", main = nnm[i])
-    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$Recruitment,1,sum)[gety], col = i, lwd=1, lty=1)
+    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$Recruitment,1,sum)[gety], col = 1, lwd=1, lty=1)
   }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_recruit2_",i,".png"), type = "png")
 
+windows(10,10); par(mfrow=c(3,4))
 for(i in 1:length(testrep1)){ 
-  if(i %in% c(10, 19, 28, 37, 46, 55)){
-    savePlot(paste0(skj22_dir,"/figures/allruns2_F_",i-1,".png"), type = "png")
-  }
-  if(i %in% c(1, 10, 19, 28, 37, 46, 55)) {
-    windows(10,10); par(mfrow=c(3,3))}
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
-    doyrs <- (max(yrs) - 25):max(yrs)
-    gety <- (length(yrs)-100): length(yrs)
-    yl <- max(testrep1[[i]]$FatYrAgeReg[,,1])
+    doyrs <- yrs
+    gety <- 1: length(yrs)
+    yl <- max(apply(testrep1[[i]]$FatYrAgeReg[,,5],1,mean)[gety])
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="F", type = "n", main = nnm[i])
-    for(ag in 1:48) lines(testrep1[[i]]$yrs[gety], testrep1[[i]]$FatYrAgeReg[,ag,1][gety], col = i, lwd=1, lty=1)
-}}
+    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$FatYrAgeReg[,,5],1,mean)[gety], col = 1, lwd=1, lty=1)
+  }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_F_",i,".png"), type = "png")
 
+windows(10,10); par(mfrow=c(3,4))
 for(i in 1:length(testrep1)){ 
-  if(i %in% c(10, 19, 28, 37, 46, 55)){
-    savePlot(paste0(skj22_dir,"/figures/allruns2_R1_depletion_",i-1,".png"), type = "png")
-  }
-  if(i %in% c(1, 10, 19, 28, 37, 46, 55)) {
-    windows(10,10); par(mfrow=c(3,3))}
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
-    doyrs <- (max(yrs) - 25):max(yrs)
-    gety <- (length(yrs)-100): length(yrs)
+    doyrs <- yrs
+    gety <- 1: length(yrs)
+    yl <- 0.6
+    plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="F", type = "n", main = nnm[i])
+    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$FatYrAgeReg[,,5],1,mean)[gety], col = 1, lwd=1, lty=1)
+  }}
+savePlot(paste0(skj22_dir,"/figures/allruns2_Fx_",i,".png"), type = "png")
+
+windows(10,10); par(mfrow=c(3,4))
+for(i in 1:length(testrep1)){ 
+  if(length(testrep1[[i]]) > 0) {
+    yrs <- testrep1[[i]]$yrs
+    doyrs <- yrs
+    gety <- 1: length(yrs)
     yl <- 1
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="Depletion", type = "n", main = nnm[i])
     lines(testrep1[[i]]$yrs[gety], (testrep1[[i]]$AdultBiomass[,1]/testrep1[[i]]$AdultBiomass.nofish[,1])
-          [gety], col = i, lwd=1, lty=1)
+          [gety], col = 1, lwd=1, lty=1)
 }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_R1_depletion_",i,".png"), type = "png")
 
+windows(10,10); par(mfrow=c(3,4))
 for(i in 1:length(testrep1)){ 
-  if(i %in% c(10, 19, 28, 37, 46, 55)){
-    savePlot(paste0(skj22_dir,"/figures/allruns2_SSB_",i-1,".png"), type = "png")
-  }
-  if(i %in% c(1, 10, 19, 28, 37, 46, 55)) {
-    windows(10,10); par(mfrow=c(3,3))}
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
-    doyrs <- (max(yrs) - 25):max(yrs)
-    gety <- (length(yrs)-100): length(yrs)
+    doyrs <- yrs
+    gety <- 1: length(yrs)
     yl <- max(apply(testrep1[[i]]$AdultBiomass,1,sum))
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="SSB", type = "n", main = nnm[i])
-    lines(testrep1[[i]]$yrs[gety], (apply(testrep1[[i]]$AdultBiomass,1,sum))[gety], col = i, lwd=1, lty=1)
+    lines(testrep1[[i]]$yrs[gety], (apply(testrep1[[i]]$AdultBiomass,1,sum))[gety], col = 1, lwd=1, lty=1)
 }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_SSB_",i,".png"), type = "png")
+
+for(i in 1:length(testrep1)){ 
+  # if(i %in% c(10, 19, 28, 37, 46, 55)){
+  #   savePlot(paste0(skj22_dir,"/figures/allruns2_SSB_",i-1,".png"), type = "png")
+  # }
+  if(i %in% c(1, 11, 19, 28, 37, 46, 55)) {
+    windows(10,10); par(mfrow=c(3,4))}
+  if(length(testrep1[[i]]) > 0) {
+    yrs <- testrep1[[i]]$yrs
+    doyrs <- yrs
+    gety <- 1: length(yrs)
+    yl <- max(testrep1[[i]]$MatAge)
+    plot(1:16, testrep1[[i]]$MatAge, ylim = c(0, yl), xlab = "Year", ylab="M at age", type = "b", main = nnm[i])
+  }}
+savePlot(paste0(skj22_dir,"/figures/natural_mort",i,".png"), type = "png")
+
+names(testrep1[[i]])
+testrep1[[i]]$MatAge
 graphics.off()
  
+######################################## Below here is legacy from ALB runs
 library(mgcv)
 
 windows(7,10); par(mfrow=c(2,1))
