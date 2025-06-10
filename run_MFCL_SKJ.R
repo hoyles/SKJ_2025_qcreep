@@ -835,6 +835,8 @@ setwd(skj22_dir)
 testrep1 <- testlens <- list()
 alldirs <- dir(path="./Runs/", full.names=TRUE)[-c(2)]
 nnm <- dir(path="./Runs/")[-c(2)]
+nnm <- c("1_diagnostic", "2_drop_SSAP", "3_drop_earlysizes", "4_SSAP_sizes", "5_drop_latesizes", "6_add_creep", "7_only_RTTP", "8_only_PTTP", "9_only_JPTP", "10_only_SSAP")
+
 for (i in 1:length(alldirs)) {
   dd <- alldirs[i]
   # print(dd)
@@ -857,7 +859,7 @@ for (i in 1:length(alldirs)) {
 for (i in 1:length(alldirs)) testrep1[[i]]$dirname <- nnm[i]
 
 
-windows(10,10); par(mfrow=c(3,4))
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
 for(i in 1:length(testrep1)){ 
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
@@ -869,31 +871,31 @@ for(i in 1:length(testrep1)){
   }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_recruit2_",i,".png"), type = "png")
 
-windows(10,10); par(mfrow=c(3,4))
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
 for(i in 1:length(testrep1)){ 
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
     doyrs <- yrs
     gety <- 1: length(yrs)
-    yl <- max(apply(testrep1[[i]]$FatYrAgeReg[,,5],1,mean)[gety])
+    yl <- max(apply(testrep1[[i]]$FatYrAgeReg[,,],1,mean)[gety])
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="F", type = "n", main = nnm[i])
-    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$FatYrAgeReg[,,5],1,mean)[gety], col = 1, lwd=1, lty=1)
+    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$FatYrAgeReg,1,mean)[gety], col = 1, lwd=1, lty=1)
   }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_F_",i,".png"), type = "png")
 
-windows(10,10); par(mfrow=c(3,4))
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
 for(i in 1:length(testrep1)){ 
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
     doyrs <- yrs
     gety <- 1: length(yrs)
-    yl <- 0.6
+    yl <- 0.2
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="F", type = "n", main = nnm[i])
-    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$FatYrAgeReg[,,5],1,mean)[gety], col = 1, lwd=1, lty=1)
+    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$FatYrAgeReg,1,mean)[gety], col = 1, lwd=1, lty=1)
   }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_Fx_",i,".png"), type = "png")
 
-windows(10,10); par(mfrow=c(3,4))
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
 for(i in 1:length(testrep1)){ 
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
@@ -901,12 +903,25 @@ for(i in 1:length(testrep1)){
     gety <- 1: length(yrs)
     yl <- 1
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="Depletion", type = "n", main = nnm[i])
-    lines(testrep1[[i]]$yrs[gety], (testrep1[[i]]$AdultBiomass[,1]/testrep1[[i]]$AdultBiomass.nofish[,1])
+    lines(testrep1[[i]]$yrs[gety], apply(testrep1[[i]]$AdultBiomass,1,sum)/apply(testrep1[[i]]$AdultBiomass.nofish,1,sum)
           [gety], col = 1, lwd=1, lty=1)
-}}
+  }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_R1_depletion_",i,".png"), type = "png")
 
-windows(10,10); par(mfrow=c(3,4))
+windows(8,10)
+plot(doyrs, doyrs, ylim = c(0, 1), xlab = "Year", ylab="Depletion", type = "n")
+for(i in 1:length(testrep1)){ 
+  if(length(testrep1[[i]]) > 0) {
+    yrs <- testrep1[[i]]$yrs
+    doyrs <- yrs
+    lines(testrep1[[i]]$yrs, apply(testrep1[[i]]$AdultBiomass,1,sum)/apply(testrep1[[i]]$AdultBiomass.nofish,1,sum)
+          , col = i, lwd=2, lty=i)
+  }}
+legend("bottomleft", nnm, col=1:length(testrep1), lwd=2, lty=1:10)
+axis(side=4)
+savePlot(paste0(skj22_dir,"/figures/allruns2_R1_depletionx.png"), type = "png")
+
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
 for(i in 1:length(testrep1)){ 
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
@@ -915,29 +930,213 @@ for(i in 1:length(testrep1)){
     yl <- max(apply(testrep1[[i]]$AdultBiomass,1,sum))
     plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="SSB", type = "n", main = nnm[i])
     lines(testrep1[[i]]$yrs[gety], (apply(testrep1[[i]]$AdultBiomass,1,sum))[gety], col = 1, lwd=1, lty=1)
-}}
+  }}
 savePlot(paste0(skj22_dir,"/figures/allruns2_SSB_",i,".png"), type = "png")
 
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
 for(i in 1:length(testrep1)){ 
-  # if(i %in% c(10, 19, 28, 37, 46, 55)){
-  #   savePlot(paste0(skj22_dir,"/figures/allruns2_SSB_",i-1,".png"), type = "png")
-  # }
-  if(i %in% c(1, 11, 19, 28, 37, 46, 55)) {
-    windows(10,10); par(mfrow=c(3,4))}
+  if(length(testrep1[[i]]) > 0) {
+    yrs <- testrep1[[i]]$yrs
+    doyrs <- yrs
+    gety <- 1: length(yrs)
+    yl <- 2.5e7
+    plot(doyrs, doyrs, ylim = c(0, yl), xlab = "Year", ylab="SSB", type = "n", main = nnm[i])
+    lines(testrep1[[i]]$yrs[gety], (apply(testrep1[[i]]$AdultBiomass,1,sum))[gety], col = 1, lwd=1, lty=1)
+  }}
+savePlot(paste0(skj22_dir,"/figures/allruns2_SSBx_",i,".png"), type = "png")
+
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
+for(i in 1:length(testrep1)){ 
   if(length(testrep1[[i]]) > 0) {
     yrs <- testrep1[[i]]$yrs
     doyrs <- yrs
     gety <- 1: length(yrs)
     yl <- max(testrep1[[i]]$MatAge)
-    plot(1:16, testrep1[[i]]$MatAge, ylim = c(0, yl), xlab = "Year", ylab="M at age", type = "b", main = nnm[i])
+    plot(1:16, testrep1[[i]]$MatAge, ylim = c(0, yl), xlab = "Age (quarters)", ylab="M", type = "b", main = nnm[i])
   }}
 savePlot(paste0(skj22_dir,"/figures/natural_mort",i,".png"), type = "png")
+
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
+for(i in 1:length(testrep1)){ 
+  if(length(testrep1[[i]]) > 0) {
+    yrs <- testrep1[[i]]$yrs
+    doyrs <- yrs
+    gety <- 1: length(yrs)
+    yl <- 1.2
+    plot(1:16, testrep1[[i]]$MatAge, ylim = c(0, yl), xlab = "Age (quarters)", ylab="M", type = "b", main = nnm[i])
+  }}
+savePlot(paste0(skj22_dir,"/figures/natural_mortx",i,".png"), type = "png")
+
+windows(8,8)
+plot(1:16, testrep1[[1]]$MatAge, ylim = c(0, 1.3), xlab = "Age (quarters)", ylab="M", type = "n", main = "")
+for(i in 1:length(testrep1)){ 
+  if(length(testrep1[[i]]) > 0) {
+    lines(1:16, testrep1[[i]]$MatAge, col=i, pch=i, type='b')
+  }}
+legend("topright", nnm, col=1:length(testrep1), pch=1:length(testrep1), lwd=1, lty=1)
+savePlot(paste0(skj22_dir,"/figures/natural_mortx.png"), type = "png")
+
+#names(testrep1[[i]])
+windows(8,10); par(mfrow=c(4,3), mar=c(4,4,4,1))
+for(i in 1:length(testrep1)){ 
+  if(length(testrep1[[i]]) > 0) {
+    yrs <- testrep1[[i]]$yrs
+    doyrs <- yrs
+    gety <- 1: length(yrs)
+    yl <- 90
+    plot(1:16, testrep1[[i]]$mean.LatAge, ylim = c(0, yl), xlab = "Age (quarters)", ylab="Length at age (cm)", type = "b", main = nnm[i])
+  }}
+savePlot(paste0(skj22_dir,"/figures/growth.png"), type = "png")
+
+windows(8,8)
+plot(1:16, testrep1[[1]]$mean.LatAge, ylim = c(0, 90), xlab = "Age (quarters)", ylab="Length at age (cm)", type = "n")
+for(i in 1:length(testrep1)){ 
+  if(length(testrep1[[i]]) > 0) {
+    lines(1:16, testrep1[[i]]$mean.LatAge, col=i, pch=i, type='b')
+  }}
+legend("bottomright", nnm, col=1:length(testrep1), pch=1:length(testrep1), lwd=1, lty=1)
+savePlot(paste0(skj22_dir,"/figures/growthx.png"), type = "png")
 
 names(testrep1[[i]])
 testrep1[[i]]$MatAge
 graphics.off()
- 
-######################################## Below here is legacy from ALB runs
+testrep1[[1]]$mean.LatAge
+testrep1[[2]]$mean.LatAge
+testrep1[[3]]$mean.LatAge
+testrep1[[4]]$mean.LatAge
+testrep1[[5]]$mean.LatAge
+testrep1[[6]]$mean.LatAge
+testrep1[[7]]$mean.LatAge
+testrep1[[8]]$mean.LatAge
+
+for(i in 1:10){
+  print(c(apply(testrep1[[i]]$AdultBiomass,1,sum)[1], apply(testrep1[[i]]$AdultBiomass,1,sum)[200], nnm[i]))
+}
+
+for(i in 1:10){
+  print(c(apply(testrep1[[i]]$AdultBiomass,1,sum)[1], apply(testrep1[[i]]$AdultBiomass,1,sum)[200], nnm[i]))
+}
+WtatYrAgeReg <- testrep1[[i]]$NatYrAgeReg
+dim(WtatYrAgeReg)
+for(yy in 1:200){
+  for(rr in 1:8){
+    for(aa in 1:16){
+      WtatYrAgeReg[yy,aa,rr] <- testrep1[[i]]$NatYrAgeReg[yy,aa,rr] * as.numeric(testrep1[[i]]$mean.WatAge)[aa]
+    }
+  }
+}
+
+for(i in 1:10){
+  WtatYrAgeReg <- testrep1[[i]]$NatYrAgeReg
+  dim(WtatYrAgeReg)
+  for(yy in 1:200){
+    for(rr in 1:8){
+      for(aa in 1:16){
+        WtatYrAgeReg[yy,aa,rr] <- testrep1[[i]]$NatYrAgeReg[yy,aa,rr] * as.numeric(testrep1[[i]]$mean.WatAge)[aa] / 1000
+      }
+    }
+  }
+  print(c(apply(WtatYrAgeReg[,3:6,],1,sum)[1], apply(WtatYrAgeReg[,3:6,],1,sum)[200], nnm[i]))
+}
+
+table(alltags$rel$y[alltags$tagprog=="SSAP"])
+table(alltags$rel$y[alltags$tagprog=="RTTP"])
+table(alltags$rel$y[alltags$tagprog=="JPTP"])
+table(alltags$rel$y[alltags$tagprog=="PTTP"])
+
+table(alltags$rel.recov$yr[alltags$tagprog[alltags$rel.recov$grp]=="SSAP"])
+table(alltags$rel.recov$yr[alltags$tagprog[alltags$rel.recov$grp]=="RTTP"])
+table(alltags$rel.recov$yr[alltags$tagprog[alltags$rel.recov$grp]=="JPTP"])
+table(alltags$rel.recov$yr[alltags$tagprog[alltags$rel.recov$grp]=="PTTP"])
+
+ssap_yrs <- floor(yrs) %in% 1977:1982
+rttp_yrs <- floor(yrs) %in% 1989:1995
+pttp_yrs <- floor(yrs) %in% 2006:2021
+jptp_yrs <- floor(yrs) %in% 1989:2021
+yrs[193:200]
+
+biolist <- data.frame(d1970=NA, ssap=NA, rttp=NA, pttp=NA, jptp=NA, d2000=NA, id=NA)
+#biolist <- data.frame()
+for(i in 1:10){
+  WtatYrAgeReg <- testrep1[[i]]$NatYrAgeReg
+  dim(WtatYrAgeReg)
+  for(yy in 1:200){
+    for(rr in 1:8){
+      for(aa in 1:16){
+        WtatYrAgeReg[yy,aa,rr] <- testrep1[[i]]$NatYrAgeReg[yy,aa,rr] * as.numeric(testrep1[[i]]$mean.WatAge)[aa] / 1000
+      }
+    }
+  }
+  a <- apply(WtatYrAgeReg[,2:7,],1,sum)
+  #d1970=mean(a[1:32]),mean(a[ssap_yrs]), mean(a[rttp_yrs]), mean(a[pttp_yrs]), mean(a[jptp_yrs]), mean(a[193:200])))
+  biolist <- rbind(biolist, 
+                   c(d1970=mean(a[1:32]),ssap=mean(a[ssap_yrs]), rttp=mean(a[rttp_yrs]), pttp=mean(a[pttp_yrs]), 
+                     jptp=mean(a[jptp_yrs]), d2000=mean(a[193:200]), id=nnm[i]))          
+}
+biolist <- biolist[-1,]
+
+biolist_14 <- data.frame(d1970=NA, ssap=NA, rttp=NA, pttp=NA, jptp=NA, d2000=NA, id=NA)
+#biolist <- data.frame()
+for(i in 1:10){
+  WtatYrAgeReg <- testrep1[[i]]$NatYrAgeReg
+  dim(WtatYrAgeReg)
+  for(yy in 1:200){
+    for(rr in 1:8){
+      for(aa in 1:16){
+        WtatYrAgeReg[yy,aa,rr] <- testrep1[[i]]$NatYrAgeReg[yy,aa,rr] * as.numeric(testrep1[[i]]$mean.WatAge)[aa] / 1000
+      }
+    }
+  }
+  a <- apply(WtatYrAgeReg[,2:7,1:4],1,sum)
+  #d1970=mean(a[1:32]),mean(a[ssap_yrs]), mean(a[rttp_yrs]), mean(a[pttp_yrs]), mean(a[jptp_yrs]), mean(a[193:200])))
+  biolist_14 <- rbind(biolist_14, 
+                      c(d1970=mean(a[1:32]),ssap=mean(a[ssap_yrs]), rttp=mean(a[rttp_yrs]), pttp=mean(a[pttp_yrs]), 
+                        jptp=mean(a[jptp_yrs]), d2000=mean(a[193:200]), id=nnm[i]))          
+}
+biolist_14 <- biolist_14[-1,]
+
+biolist_58 <- data.frame(d1970=NA, ssap=NA, rttp=NA, pttp=NA, jptp=NA, d2000=NA, id=NA)
+#biolist <- data.frame()
+for(i in 1:10){
+  WtatYrAgeReg <- testrep1[[i]]$NatYrAgeReg
+  dim(WtatYrAgeReg)
+  for(yy in 1:200){
+    for(rr in 1:8){
+      for(aa in 1:16){
+        WtatYrAgeReg[yy,aa,rr] <- testrep1[[i]]$NatYrAgeReg[yy,aa,rr] * as.numeric(testrep1[[i]]$mean.WatAge)[aa] / 1000
+      }
+    }
+  }
+  a <- apply(WtatYrAgeReg[,2:7,5:8],1,sum)
+  #d1970=mean(a[1:32]),mean(a[ssap_yrs]), mean(a[rttp_yrs]), mean(a[pttp_yrs]), mean(a[jptp_yrs]), mean(a[193:200])))
+  biolist_58 <- rbind(biolist_58, 
+                      c(d1970=mean(a[1:32]),ssap=mean(a[ssap_yrs]), rttp=mean(a[rttp_yrs]), pttp=mean(a[pttp_yrs]), 
+                        jptp=mean(a[jptp_yrs]), d2000=mean(a[193:200]), id=nnm[i]))          
+}
+biolist_58 <- biolist_58[-1,]
+
+
+
+alltags <- read.tag(paste(alldirs[1],"skj.tag",sep="/"))     
+str(alltags)
+head(alltags$rel.lens)
+head(alltags$rel.recov)
+a <- table(alltags$rel.recov$len, alltags$tagprog[alltags$rel.recov$grp])
+a <- t(t(a)/apply(a, 2, sum))
+apply(as.numeric(rownames(a)) * a[,1:4],2,sum)
+lens <- seq(2,108, 2)
+len_rels <- apply(t(alltags$rel.lens) * lens,2,sum) / apply(alltags$rel.lens,1,sum)
+a <- table(round(len_rels,0), alltags$tagprog)
+windows()
+plot(lens, apply(alltags$rel.lens[alltags$tagprog=="PTTP",],2,sum) / sum(alltags$rel.lens[alltags$tagprog=="PTTP",]), type="l", col=1, ylim=c(0,.2), xlab="Length (cm)", ylab="Relative length", xlim=c(16, 80), lwd=2)
+lines(lens, apply(alltags$rel.lens[alltags$tagprog=="SSAP",],2,sum) / sum(alltags$rel.lens[alltags$tagprog=="SSAP",]), col=2, lty=2, lwd=2)
+lines(lens, apply(alltags$rel.lens[alltags$tagprog=="RTTP",],2,sum) / sum(alltags$rel.lens[alltags$tagprog=="RTTP",]), col=3, lty=3, lwd=2)
+lines(lens, apply(alltags$rel.lens[alltags$tagprog=="JPTP",],2,sum) / sum(alltags$rel.lens[alltags$tagprog=="JPTP",]), col=4, lty=4, lwd=2)
+legend("topright", legend=c("PTTP", "SSAP", "RTTP", "JPTP"), col=1:4, cex=0.8, lty=1:4, lwd=2)
+savePlot(paste0(skj22_dir,"/figures/","tag_rel_lens.png"), type = "png")
+
+
+######################################## Below here is legacy from ALB runs ################################################
 library(mgcv)
 
 windows(7,10); par(mfrow=c(2,1))
